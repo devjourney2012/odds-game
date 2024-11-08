@@ -1,5 +1,6 @@
 package com.example.odds_game.service
 
+import com.example.odds_game.constant.TransactionType
 import com.example.odds_game.model.*
 import com.example.odds_game.repository.BetRepository
 import com.example.odds_game.repository.PlayerRepository
@@ -13,7 +14,8 @@ import kotlin.random.Random
 @Service
 class GameService(
     private val playerRepository: PlayerRepository,
-    private val betRepository: BetRepository
+    private val betRepository: BetRepository,
+    private val walletService: WalletService
 ) {
     fun registerPlayer(player: Player): ResponseEntity<RegistrationResponse> {
         if (playerRepository.findByUsername(player.username) != null) {
@@ -43,8 +45,14 @@ class GameService(
 
         val winnings = calculateWinnings(bet.numberBet, resultNumber, bet.amount)
 
+        val transaction = Transaction(playerId = bet.playerId, amount = -bet.amount, transactionType = TransactionType.BET_PLACED)
+        walletService.addTransaction(transaction)
+
         if (winnings > 0) {
             player.totalWinnings += winnings
+
+            val winningsTransaction = Transaction(playerId = bet.playerId, amount = winnings, transactionType = TransactionType.WINNING)
+            walletService.addTransaction(winningsTransaction)
         }
 
         bet.resultNumber = resultNumber
