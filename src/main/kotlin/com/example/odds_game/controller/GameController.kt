@@ -13,5 +13,10 @@ class GameController(private val gameService: GameService) {
     fun registerPlayer(@RequestBody player: Player): ResponseEntity<RegistrationResponse> {
         return gameService.registerPlayer(player)
     }
-    
+
+    @PostMapping("/bet")
+    fun placeBet(@RequestBody bet: Bet): ResponseEntity<BetResponse> {
+        return gameService.placeBet(bet)
+    }
+
 }
