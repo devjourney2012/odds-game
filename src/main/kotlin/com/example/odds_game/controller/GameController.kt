@@ -19,4 +19,9 @@ class GameController(private val gameService: GameService) {
         return gameService.placeBet(bet)
     }
 
+    @GetMapping("/bets/player/{playerId}")
+    fun getBetsByPlayerId(@PathVariable playerId: Long): ResponseEntity<List<Bet>> {
+        return gameService.getBetsByPlayerId(playerId)
+    }
+
 }

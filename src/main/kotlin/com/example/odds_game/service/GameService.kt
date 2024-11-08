@@ -70,4 +70,8 @@ class GameService(
             else -> 0.0
         }
     }
+
+    fun getBetsByPlayerId(playerId: Long): ResponseEntity<List<Bet>> {
+        return ResponseEntity.ok(betRepository.findByPlayerId(playerId))
+    }
 }
